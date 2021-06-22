@@ -1,47 +1,39 @@
 import { GetterTree, ActionTree, MutationTree } from 'vuex'
 
 interface State {
-    notes: []
+    notes: any
 }
-var stateinterface: State = {
+const stateinterface: State = {
     notes: []
 }
 export const state = () => (stateinterface)
-
 export type RootState = ReturnType<typeof state>
 
 export const getters: GetterTree<RootState, RootState> = {
   allNotes: state => state.notes
 }
-
 export const mutations: MutationTree<RootState> = {
-    SET_RESPONSE: (state, payload:Record<string, string>) => {
+    SET_RESPONSE: (state:State, payload:Record<string, string | object>) => {
         state.notes = payload.data
         // const newstate = state
         // newstate.notes = payload.data;
         // state = newstate
     }
 }
-
 export const actions: ActionTree<RootState, RootState> = {
-
-  // actionA({ commit }, { var1, var2 }) {
-  //   processAction(handler, () => {}, () => {})
-  // }
   async reqNotes({ commit }) {
-    // console.dir(this.state.auth.jwt)
-    const authHeader = this.getters.getHeader
-    if(authHeader){
+    const APIBaseURL = this.getters.getAPIBaseURL
+    const jwt = this.getters['auth/getJWT']
+    if(jwt){
       try {
         const response = await this.$axios
-        .get(`https://nuxt-vue3-scaffold.herokuapp.com/notes`,
+        .get(`${APIBaseURL}/notes`,
         {
-          headers: authHeader
-          // headers: {
-          //   'Authorization': `Bearer ${jwt}`,
-          //   'Content-Type': 'application/json',
-          //   'Accept': 'application/json'
-          // }
+          headers: {
+            'Authorization': `Bearer ${jwt}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
         })
         if ( response ) { 
           commit('SET_RESPONSE', response )

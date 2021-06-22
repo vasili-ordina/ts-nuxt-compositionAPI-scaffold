@@ -44,16 +44,19 @@
 import { defineComponent, onMounted, ref, useStore } from "@nuxtjs/composition-api"
 export default defineComponent({
     setup() {
-        console.dir(useStore)
         const store = useStore()
         let loading = ref(false)
         let username = ref('')
         let password = ref('')
-        const login = () => { 
-            store.dispatch('auth/login', { username: username.value, password: password.value }) 
+        const login = () => {
+            loading.value = true
+            store.dispatch('auth/login', { username: username.value, password: password.value })
+            .then( () => { loading.value = false } )
+            .catch( () => { 
+                loading.value = false
+                alert(store.getters['auth/getErrorMssg'])
+            })
         }
-        onMounted(() => {
-        })
         return { 
             username, 
             password, 
