@@ -1,13 +1,11 @@
 import { GetterTree, ActionTree, MutationTree } from 'vuex'
 
 interface State {
-    APIbaseurl: string,
     user: object,
     jwt: string,
     authenticated: boolean
 }
 var stateinterface: State = {
-    APIbaseurl: "https://nuxt-vue3-scaffold.herokuapp.com/",
     user: {},
     jwt: "",
     authenticated: false,
@@ -51,11 +49,13 @@ export const actions: ActionTree<RootState, RootState> = {
           'Accept': 'application/json'
         }
       }) 
-      console.log('login-in request ready:')
-      console.log(response)
       if ( response ) { 
-        commit('SET_RESPONSE', response )
+        commit('SET_RESPONSE', response)
         commit('SET_STATUS', true)
+        const jwt = await this.getters['auth/getJWT'] // state.auth.jwt
+        console.log('jwt in index.ts:')
+        console.dir(this.getters)
+        this.dispatch('addJWTtoHeader', jwt)
       } else {
         throw `- iets mis met verwerking van gegevens voor login: ${response}`
         // commit('SET_RESPONSE', '')

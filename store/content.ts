@@ -1,12 +1,9 @@
 import { GetterTree, ActionTree, MutationTree } from 'vuex'
 
 interface State {
-    auth: any
-    APIbaseurl: string,
-    notes: [],
+    notes: []
 }
 var stateinterface: State = {
-    APIbaseurl: "https://nuxt-vue3-scaffold.herokuapp.com/",
     notes: []
 }
 export const state = () => (stateinterface)
@@ -33,17 +30,18 @@ export const actions: ActionTree<RootState, RootState> = {
   // }
   async reqNotes({ commit }) {
     // console.dir(this.state.auth.jwt)
-    const jwt = this.state.auth.jwt
-    if(jwt){
+    const authHeader = this.getters.getHeader
+    if(authHeader){
       try {
         const response = await this.$axios
         .get(`https://nuxt-vue3-scaffold.herokuapp.com/notes`,
         {
-          headers: {
-            'Authorization': `Bearer ${jwt}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
+          headers: authHeader
+          // headers: {
+          //   'Authorization': `Bearer ${jwt}`,
+          //   'Content-Type': 'application/json',
+          //   'Accept': 'application/json'
+          // }
         })
         if ( response ) { 
           commit('SET_RESPONSE', response )
