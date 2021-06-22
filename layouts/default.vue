@@ -1,7 +1,13 @@
 <template>
-  <div>
-    <Nuxt />
-  </div>
+  <v-app>
+    <v-app-bar app>whatever title</v-app-bar>
+    <v-main>
+      <Nuxt />
+    </v-main>
+    <v-footer>
+      footer..
+    </v-footer>
+  </v-app>
 </template>
 
 <style>
