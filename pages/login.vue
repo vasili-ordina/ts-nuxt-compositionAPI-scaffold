@@ -50,7 +50,8 @@ export default defineComponent({
         let password = ref('')
         const login = () => {
             loading.value = true
-            store.dispatch('auth/login', { username: username.value, password: password.value })
+            store
+            .dispatch('auth/login', { username: username.value, password: password.value })
             .then( () => { loading.value = false } )
             .catch( () => { 
                 loading.value = false

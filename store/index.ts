@@ -4,7 +4,7 @@ interface State {
     APIBaseURL: string
 }
 var stateinterface: State = {
-    APIBaseURL: "https://nuxt-vue3-scaffold.herokuapp.com",
+    APIBaseURL: "https://nuxt-vue3-scaffold.herokuapp.com"
 }
 export const state = () => (stateinterface)
 export type RootState = ReturnType<typeof state>
