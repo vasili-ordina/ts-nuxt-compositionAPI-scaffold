@@ -8,6 +8,7 @@ const statedata: Stateinterface = {
     auth: {
         'notes': {
             title: 'Notes!',
+            description: 'some description for notes',
             restricted: false
         },
         'login': {

@@ -18,7 +18,26 @@ export const mutations: MutationTree<RootState> = {
     // }
 }
 export const actions: ActionTree<RootState, RootState> = {
-  // actionA({ commit }, { var1, var2 }) {
-  //   processAction(handler, () => {}, () => {})
-  // }
+
+  // *** concept ***
+  // api = APIbroker({ baseURL: "https://nuxt-vue3-scaffold.herokuapp.com" })
+  /* api.auth({
+    handler: 'login',
+    endpoint: '/auth/local',
+    payload: { username, password },
+    errorDrilldown: 'response.data.message[0].messages[0].message'
+  })
+  api.auth({
+      handler: 'logout',
+      endpoint 'auth,
+      persist: true
+  })
+  api.content({
+      handler: 'get',
+      payload: {},
+      endpoint: 'notes',
+      persist: false,
+      auth: true
+  })
+  */
 }

@@ -26,13 +26,6 @@
 <script lang="ts">
 import { defineComponent, onBeforeMount, ref, useStore } from "@nuxtjs/composition-api"
 export default defineComponent({
-    head: {
-        title: 'Notes!',
-        htmlAttrs: {},
-        meta: [
-            { hid: 'description', name: 'description', content: '' }
-        ]
-    },
     setup() {
         const store = useStore()
         const authenticated = ref()

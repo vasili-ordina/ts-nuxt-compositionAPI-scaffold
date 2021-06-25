@@ -14,7 +14,7 @@
         </template>
         <template v-if="data.authorized">
             <v-card-title>Ingelogd</v-card-title>
-            <v-card-text>U bent ingelogd als: {{email}}</v-card-text>
+            <v-card-text>U bent ingelogd als: {{data.email}}</v-card-text>
             <v-card-actions>
                 <v-btn
                     @click="logout()"
@@ -78,12 +78,6 @@ export default defineComponent({
             password: '',
             email: ''
         })
-        // const authorized = ref()
-        // let loading = ref(false)
-        // const snackbar:Record<string,any> = ref({ state: false, txt: '', timeout: 3000, color: 'dark' })
-        // let username = ref('')
-        // let password = ref('')
-        // let email = ref('')
         const logout = () => {    
             store
             .dispatch('auth/logout')
@@ -105,9 +99,11 @@ export default defineComponent({
                 data.authorized = store.getters['auth/authenticated']
                 if (data.authorized) {
                     data.email = store.getters['auth/getUserInfo'].email
-                    data.snackbar.state = true
-                    data.snackbar.color = 'green'
-                    data.snackbar.txt = 'Succesvol ingelogd!'
+                    data.snackbar = {
+                        state: true,
+                        color: 'green',
+                        txt: 'Succesvol ingelogd!'
+                    }
                 } else {
                     throw 'unknown auth error. system too slow?'
                 }
@@ -121,12 +117,6 @@ export default defineComponent({
             })
         }
         return { 
-            // username, 
-            // password, 
-            // loading,
-            // snackbar,
-            // authorized,
-            // email,
             data,
             login,
             logout

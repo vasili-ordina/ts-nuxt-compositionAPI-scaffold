@@ -1,6 +1,9 @@
 <template>
   <v-app>
-    <v-app-bar app><h1>whatever title</h1>&nbsp;<nuxt-link to="notes" style="float: right">To notes</nuxt-link></v-app-bar>
+    <v-app-bar app
+      ><h1>{{dynamicMeta.title}}</h1><h2>{{dynamicMeta.description}}</h2>
+      <nuxt-link to="notes" style="float: right">To notes</nuxt-link></v-app-bar
+    >
     <v-main>
       <Nuxt />
     </v-main>
@@ -9,18 +12,32 @@
     </v-footer>
   </v-app>
 </template>
-
+<script lang="ts">
+import { defineComponent, useStore, useRouter, useMeta } from "@nuxtjs/composition-api";
+export default defineComponent({
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    const dynamicMeta = store.state.pages.auth[router.history.current.name]
+    useMeta(() => ({ 
+      title: dynamicMeta.title,
+      meta: [
+        {
+          name: 'description',
+          hid: 'description',
+          content: dynamicMeta.description
+        }
+      ]
+    }))
+    return { dynamicMeta }
+  },
+  head: {}
+});
+</script>
 <style>
 html {
-  font-family:
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
+  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
