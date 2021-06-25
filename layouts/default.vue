@@ -1,9 +1,10 @@
 <template>
   <v-app>
-    <v-app-bar app
-      ><h1>{{dynamicMeta.title}}</h1><h2>{{dynamicMeta.description}}</h2>
-      <nuxt-link to="notes" style="float: right">To notes</nuxt-link></v-app-bar
-    >
+    <v-app-bar app>
+      <h1>{{pageinfo.title}}</h1>
+      <h2>{{pageinfo.meta[0].content}}</h2>
+      <nuxt-link to="notes" style="float: right">To notes</nuxt-link>
+    </v-app-bar>
     <v-main>
       <Nuxt />
     </v-main>
@@ -13,23 +14,43 @@
   </v-app>
 </template>
 <script lang="ts">
-import { defineComponent, useStore, useRouter, useMeta } from "@nuxtjs/composition-api";
+import {
+  watch,
+  defineComponent,
+  useStore,
+  useRoute,
+  useMeta,
+  ref
+} from "@nuxtjs/composition-api";
 export default defineComponent({
   setup() {
     const store = useStore();
-    const router = useRouter();
-    const dynamicMeta = store.state.pages.auth[router.history.current.name]
-    useMeta(() => ({ 
-      title: dynamicMeta.title,
-      meta: [
+    const route = useRoute();
+    const pageinfo = ref();
+    watch(route, () => {
+      pageinfo.value = {
+        title: store.state.pages.auth[route.value.name].title,
+        meta: [
         {
-          name: 'description',
-          hid: 'description',
-          content: dynamicMeta.description
-        }
-      ]
-    }))
-    return { dynamicMeta }
+          name:  "description",
+          hid: "description",
+          content: store.state.pages.auth[route.value.name].description || ''
+        },
+        {
+          name: "og:title",
+          hid: "opengraph-title",
+          content: store.state.pages.auth[route.value.name].title
+        },
+        {
+          name: "og:description",
+          hid: "opengraph-description",
+          content: store.state.pages.auth[route.value.name].description || ''
+        },
+        ]
+      }
+    }, {immediate:true});
+    useMeta(() => ( pageinfo.value ));
+    return { pageinfo };
   },
   head: {}
 });
@@ -83,3 +104,15 @@ html {
   background-color: #35495e;
 }
 </style>
+
+function beforeMount() {
+  throw new Error("Function not implemented.");
+}
+
+function beforeMount() {
+  throw new Error("Function not implemented.");
+}
+
+function beforeMount() {
+  throw new Error("Function not implemented.");
+}

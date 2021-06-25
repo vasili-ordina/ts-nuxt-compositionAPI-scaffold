@@ -9,7 +9,7 @@ const statedata: Stateinterface = {
         'notes': {
             title: 'Notes!',
             description: 'some description for notes',
-            restricted: false
+            restricted: true
         },
         'login': {
             title: 'Log-in',
