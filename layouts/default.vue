@@ -24,8 +24,8 @@ import {
 } from "@nuxtjs/composition-api";
 export default defineComponent({
   setup() {
-    const store = useStore();
-    const route = useRoute();
+    const store:any = useStore();
+    const route:any = useRoute();
     const pageinfo = ref();
     watch(route, () => {
       pageinfo.value = {
