@@ -1,7 +1,7 @@
 <template>
 <v-container>
     <v-card
-        :loading="loading"
+        :loading="data.loading"
         class="mx-auto my-12"
         max-width="374"
     >
@@ -12,57 +12,124 @@
                 indeterminate
             ></v-progress-linear>
         </template>
-        <v-card-title>Inloggen</v-card-title>
-        <v-card-text>
-            <v-text-field
-                v-model="username"
-                label="Gebruikersnaam"
-                hide-details="auto"
-            ></v-text-field>
-            <v-text-field
-                v-model="password"
-                label="Wachtwoord"
-                type="password"
-                hide-details="auto"
-            ></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-            <v-btn
-                color="deep-purple lighten-2"
-                text
-                @click="login()"
-            >
-                Inloggen
-            </v-btn>
-        </v-card-actions>
+        <template v-if="data.authorized">
+            <v-card-title>Ingelogd</v-card-title>
+            <v-card-text>U bent ingelogd als: {{email}}</v-card-text>
+            <v-card-actions>
+                <v-btn
+                    @click="logout()"
+                >
+                Uitloggen
+                </v-btn>
+            </v-card-actions>
+        </template>
+        <template v-else>
+            <v-card-title>Inloggen</v-card-title>
+            <v-card-text>
+                <v-text-field
+                    v-model="data.username"
+                    label="Gebruikersnaam"
+                    hide-details="auto"
+                ></v-text-field>
+                <v-text-field
+                    v-model="data.password"
+                    label="Wachtwoord"
+                    type="password"
+                    hide-details="auto"
+                ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+                <v-btn
+                    color="deep-purple lighten-2"
+                    text
+                    @click="login()"
+                >
+                    Inloggen
+                </v-btn>
+            </v-card-actions>
+        </template>
     </v-card>
-    <nuxt-link to="notes">To notes</nuxt-link>
+    <v-snackbar
+        :color="data.snackbar.color + ' darken-2'"
+        v-model="data.snackbar.state"
+        :timeout="data.snackbar.timeout"
+    >
+    {{data.snackbar.txt}}
+    </v-snackbar>
 </v-container>
 
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref, useStore } from "@nuxtjs/composition-api"
+import { defineComponent, ref, reactive, useStore, useRouter } from "@nuxtjs/composition-api"
 export default defineComponent({
     setup() {
         const store = useStore()
-        let loading = ref(false)
-        let username = ref('')
-        let password = ref('')
-        const login = () => {
-            loading.value = true
+        const router = useRouter()
+        const data = reactive({
+            authorized: <boolean | undefined>undefined,
+            loading: false,
+            snackbar: <any>{
+                state: false,
+                txt: '',
+                timeout: 2000,
+                color: 'dark'
+            },
+            username: '',
+            password: '',
+            email: ''
+        })
+        // const authorized = ref()
+        // let loading = ref(false)
+        // const snackbar:Record<string,any> = ref({ state: false, txt: '', timeout: 3000, color: 'dark' })
+        // let username = ref('')
+        // let password = ref('')
+        // let email = ref('')
+        const logout = () => {    
             store
-            .dispatch('auth/login', { username: username.value, password: password.value })
-            .then( () => { loading.value = false } )
+            .dispatch('auth/logout')
+            .then( () => {
+                data.snackbar = {
+                    state: true,
+                    color: 'orange',
+                    txt: 'Succesvol uitgelogd'
+                }
+                data.authorized = store.getters['auth/authenticated']
+            })
+        }
+        const login = () => {
+            data.loading = true
+            store
+            .dispatch('auth/login', { username: data.username, password: data.password })
+            .then( () => { 
+                data.loading = false
+                data.authorized = store.getters['auth/authenticated']
+                if (data.authorized) {
+                    data.email = store.getters['auth/getUserInfo'].email
+                    data.snackbar.state = true
+                    data.snackbar.color = 'green'
+                    data.snackbar.txt = 'Succesvol ingelogd!'
+                } else {
+                    throw 'unknown auth error. system too slow?'
+                }
+            })
             .catch( () => { 
-                loading.value = false
-                alert(store.getters['auth/getErrorMssg'])
+                data.loading = false
+                data.authorized = false
+                data.snackbar.state = true
+                data.snackbar.color = 'red'
+                data.snackbar.txt = store.getters['auth/getErrorMssg']
             })
         }
         return { 
-            username, 
-            password, 
-            loading,
-            login
+            // username, 
+            // password, 
+            // loading,
+            // snackbar,
+            // authorized,
+            // email,
+            data,
+            login,
+            logout
         }
     }
 })

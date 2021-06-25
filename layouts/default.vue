@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app>whatever title</v-app-bar>
+    <v-app-bar app><h1>whatever title</h1>&nbsp;<nuxt-link to="notes" style="float: right">To notes</nuxt-link></v-app-bar>
     <v-main>
       <Nuxt />
     </v-main>

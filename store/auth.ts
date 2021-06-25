@@ -6,19 +6,20 @@ interface State {
     errorMssg: string,
     authenticated: boolean
 }
-const stateinterface: State = {
+const statedefaults: State = {
     user: {},
     jwt: "",
     errorMssg: "",
     authenticated: false,
 }
-export const state = () => (stateinterface)
+export const state = () => (statedefaults)
 export type RootState = ReturnType<typeof state>
 
 export const getters: GetterTree<RootState, RootState> = {
   getJWT: state => state.jwt,
   authenticated: state => state.authenticated,
-  getErrorMssg: state => state.errorMssg
+  getErrorMssg: state => state.errorMssg,
+  getUserInfo: state => state.user
 }
 export const mutations: MutationTree<RootState> = {
     SET_RESPONSE: (state, payload:Record<string, string>) => {
@@ -29,10 +30,15 @@ export const mutations: MutationTree<RootState> = {
     },
     SET_STATUS: (state, authstate:boolean) => {
         state.authenticated = authstate
+    },
+    RESET_STATE: (state) => {
+      Object.assign(state, statedefaults)
     }
 }
 export const actions: ActionTree<RootState, RootState> = {
-
+  async logout({ commit }) {
+    commit('RESET_STATE')
+  },
   async login({ commit }, { username, password }) {
     try {
       const APIBaseURL = this.getters.getAPIBaseURL
@@ -44,9 +50,8 @@ export const actions: ActionTree<RootState, RootState> = {
       },
       {
         headers: {
-          // 'Content-Type': 'application/json',
-          // 'Accept': 'application/json'
-          'accept': 'blabla'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       }).catch((error) => {
         console.error('error log:')
