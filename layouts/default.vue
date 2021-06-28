@@ -14,7 +14,7 @@
   </v-app>
 </template>
 <script lang="ts">
-import { watch, defineComponent, useStore, useRoute, useMeta, ref } from "@nuxtjs/composition-api";
+import { watch, defineComponent, useStore, useRoute, useMeta, ref, reactive } from "@nuxtjs/composition-api";
 
 export default defineComponent({
   setup() {
@@ -40,6 +40,12 @@ export default defineComponent({
         },        
       ]
     });
+    const authState = reactive(store.state.auth)
+    watch(() => [ authState.user, authState.jwt ],
+      () => {
+        console.log('store.state has changed')
+        console.dir(authState)
+      }, {immediate:true});
     watch(route, () => {
       const currentPageObj = store.state.pages.auth[route.value.name]
       if(currentPageObj){

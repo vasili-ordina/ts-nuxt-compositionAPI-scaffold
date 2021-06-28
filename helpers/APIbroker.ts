@@ -25,8 +25,6 @@ export class APIBroker {
             'Accept': 'application/json'
         }
         if(this.config.authToken) Object.assign(header, { 'Authorization': 'Bearer ' + this.config.authToken});
-        console.log('header:')
-        console.dir(header)
         try {
             const response:any = await this.$axios({
                 baseURL: this.config.baseURL,
