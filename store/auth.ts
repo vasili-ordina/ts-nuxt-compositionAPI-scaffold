@@ -1,6 +1,6 @@
 import { GetterTree, ActionTree, MutationTree } from 'vuex'
 import { APIBroker } from '~/helpers/APIbroker'
-const api = new APIBroker()
+const api = new APIBroker({})
 
 interface State {
     user: object,
@@ -39,6 +39,7 @@ export const mutations: MutationTree<RootState> = {
     },
     RESET_STATE: (state) => {
       Object.assign(state, statedefaults)
+      // !!! needs clearing the localStorage !!!
     }
 }
 export const actions: ActionTree<RootState, RootState> = {

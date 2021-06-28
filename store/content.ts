@@ -1,6 +1,6 @@
 import { GetterTree, ActionTree, MutationTree } from 'vuex'
 import { APIBroker } from '~/helpers/APIbroker'
-const api = new APIBroker()
+const api = new APIBroker({})
 
 interface APIBrokerCallbackInterface {
   commitkey: string,

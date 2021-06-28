@@ -1,7 +1,7 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   router: {
-    middleware: 'pageauth'
+    middleware: ['pageauth']
   },
   head: {
     title: 'nuxt-vue3-scaffold',
