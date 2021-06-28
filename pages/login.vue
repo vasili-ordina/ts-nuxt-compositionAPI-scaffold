@@ -14,7 +14,7 @@
         </template>
         <template v-if="data.authorized">
             <v-card-title>Ingelogd</v-card-title>
-            <v-card-text>U bent ingelogd als: {{data.email}}</v-card-text>
+            <v-card-text>U bent ingelogd als: {{data.username}} ({{data.email}})</v-card-text>
             <v-card-actions>
                 <v-btn
                     @click="logout()"

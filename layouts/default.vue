@@ -14,40 +14,56 @@
   </v-app>
 </template>
 <script lang="ts">
-import {
-  watch,
-  defineComponent,
-  useStore,
-  useRoute,
-  useMeta,
-  ref
-} from "@nuxtjs/composition-api";
+import { watch, defineComponent, useStore, useRoute, useMeta, ref } from "@nuxtjs/composition-api";
+
 export default defineComponent({
   setup() {
     const store:any = useStore();
     const route:any = useRoute();
-    const pageinfo = ref();
+    const pageinfo = ref({ // default values
+      title: '',
+      meta: [
+        {
+        name: "description",
+        hid: "description",
+        content: ""
+        },
+        {
+        name: "og:description",
+        hid: "opengraph-description",
+        content: ""
+        },
+        {
+        name: "og:title",
+        hid: "opengraph-title",
+        content: ""
+        },        
+      ]
+    });
     watch(route, () => {
+      const currentPageObj = store.state.pages.auth[route.value.name]
+      if(currentPageObj){
       pageinfo.value = {
-        title: store.state.pages.auth[route.value.name].title,
+        title: currentPageObj.title,
         meta: [
         {
           name:  "description",
           hid: "description",
-          content: store.state.pages.auth[route.value.name].description || ''
+          content: currentPageObj.description || ''
         },
         {
           name: "og:title",
           hid: "opengraph-title",
-          content: store.state.pages.auth[route.value.name].title
+          content: currentPageObj.title
         },
         {
           name: "og:description",
           hid: "opengraph-description",
-          content: store.state.pages.auth[route.value.name].description || ''
+          content: currentPageObj.description || ''
         },
         ]
       }
+    }
     }, {immediate:true});
     useMeta(() => ( pageinfo.value ));
     return { pageinfo };
