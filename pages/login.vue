@@ -109,11 +109,20 @@ export default defineComponent({
                 }
             })
             .catch( () => { 
-                data.loading = false
-                data.authorized = false
-                data.snackbar.state = true
-                data.snackbar.color = 'red'
-                data.snackbar.txt = store.getters['auth/getErrorMssg']
+                Object.assign(data,{
+                    loading: false,
+                    authorized: false,
+                    snackbar: {
+                        state: true,
+                        color: 'red',
+                        txt: store.getters['auth/getErrorMssg']
+                    }
+                })
+                // data.loading = false
+                // data.authorized = false
+                // data.snackbar.state = true
+                // data.snackbar.color = 'red'
+                // data.snackbar.txt = store.getters['auth/getErrorMssg']
             })
         }
         return { 

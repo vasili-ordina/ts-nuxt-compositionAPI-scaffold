@@ -1,6 +1,6 @@
 import { GetterTree, ActionTree, MutationTree } from 'vuex'
 import { APIBroker } from '~/helpers/APIbroker'
-const api = new APIBroker( {baseURL: 'https://nuxt-vue3-scaffold.herokuapp.com'} )
+const api = new APIBroker()
 
 interface State {
     user: object,
@@ -46,53 +46,17 @@ export const actions: ActionTree<RootState, RootState> = {
     commit('RESET_STATE')
   },
   async login({ commit }, { username, password }) {
-    var respond:APIBrokerCallbackInterface = await api.post({
+    // api.config.baseURL = this.getters['getAPIBaseURL']
+    api.config = { baseURL: this.getters['getAPIBaseURL'] }
+    const respond:APIBrokerCallbackInterface = await api.ask({
       endpoint: '/auth/local',
+      method: 'post',
       payload: { identifier: username, password: password}
     })
-    // console.log('login respond: ')
-    // console.dir(respond)
-    // if(respond.commitkey === 'SET_ERROR') {
-    //   alert('error')
-    // }
-    // if(respond.commitkey === 'SET_RESPONSE') {
-    //   alert('no error')
-    //   console.dir(respond)
-    // }
     commit(respond.commitkey, respond.payload)
     respond.commitkey === 'SET_RESPONSE' ?
       commit('SET_STATUS', true) : 
       commit('SET_STATUS', false)
     ;
   }
-  // async login({ commit }, { username, password }) {
-  //   try {
-  //     const APIBaseURL = this.getters.getAPIBaseURL
-  //     const response = await this.$axios
-  //     .post(`${APIBaseURL}/auth/local`,
-  //     { 
-  //       identifier: username, 
-  //       password: password 
-  //     },
-  //     {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Accept': 'application/json'
-  //       }
-  //     }).catch((error) => {
-  //       console.error('error log:')
-  //       console.error(error.response.data.message[0].messages[0].message)
-  //       commit('SET_ERROR', error.response.data.message[0].messages[0].message)
-  //     })
-  //     if ( response ) { 
-  //       commit('SET_RESPONSE', response)
-  //       commit('SET_STATUS', true)
-  //     } else {
-  //       throw ` - something went wrong with the response data... ${response}`
-  //     }
-  //   }
-  //   catch(e) {
-  //     throw ` - something went wrong with connection to the server: ${e}`
-  //   }
-  // }
 }

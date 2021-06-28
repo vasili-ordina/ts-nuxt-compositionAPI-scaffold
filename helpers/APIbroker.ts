@@ -1,8 +1,10 @@
 interface APIConfigInterface {
-    baseURL: string
+    baseURL?: string, // mandatory but can be set after initialization (public parameter in config)
+    authToken?: string | boolean // eighter bearer token or false (or omitted)
 } 
 interface PostObjInterface { 
     endpoint: string,
+    method?: string, // if omitted, get is asumed
     payload?: object
 }
 interface APIBrokerCallbackInterface {
@@ -16,18 +18,25 @@ export class APIBroker {
     constructor (configobj:APIConfigInterface) {
         this.config = configobj;
     }
-    async post(PostObj:PostObjInterface) {
-        const url = this.config.baseURL + PostObj.endpoint;
+    async ask(PostObj:PostObjInterface) {
+        // const url = this.config.baseURL + PostObj.endpoint;
+        const header = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+        if(this.config.authToken) Object.assign(header, { 'Authorization': 'Bearer ' + this.config.authToken});
+        console.log('header:')
+        console.dir(header)
         try {
-            const response:any = await this.$axios
-            .post(
-            url,
-            PostObj.payload || {},
-            {
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
+            const response:any = await this.$axios({
+                baseURL: this.config.baseURL,
+                url: PostObj.endpoint,
+                method: PostObj.method,
+                headers: header,
+                params: {},      
+                data: PostObj.payload,              
+                timeout: 0, // default is `0` (no timeout)
+                withCredentials: false, // default              
             })
             .then((r:any) => {
                 return { commitkey: 'SET_RESPONSE', payload: r }
