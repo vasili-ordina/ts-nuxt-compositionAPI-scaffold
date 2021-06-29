@@ -1,12 +1,18 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <h1>{{pageinfo.title}}</h1>
-      <h2>{{pageinfo.meta[0].content}}</h2>
+      <h1>{{ pageinfo.title }}</h1>
+      <h2>{{ pageinfo.meta[0].content }}</h2>
       <nuxt-link to="notes" style="float: right">To notes</nuxt-link>
     </v-app-bar>
     <v-main>
-      <Nuxt />
+      <Nuxt v-if="setupReady" />
+      <div v-else class="text-center mt-12">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+      </div>
     </v-main>
     <v-footer>
       footer..
@@ -14,73 +20,94 @@
   </v-app>
 </template>
 <script lang="ts">
-import { watch, defineComponent, useStore, useRoute, useMeta, ref, reactive, onBeforeMount } from "@nuxtjs/composition-api";
+import {
+  watch,
+  defineComponent,
+  useStore,
+  useRoute,
+  useMeta,
+  ref,
+  reactive,
+  onBeforeMount,
+  onMounted
+} from "@nuxtjs/composition-api";
 
 export default defineComponent({
   setup() {
-    const store:any = useStore();
-    const route:any = useRoute();
-    const pageinfo = ref({ // default values
-      title: '',
+    const setupReady = ref(false);
+    const store: any = useStore();
+    const route: any = useRoute();
+    const pageinfo = ref({
+      // default values
+      title: "",
       meta: [
         {
-        name: "description",
-        hid: "description",
-        content: ""
-        },
-        {
-        name: "og:description",
-        hid: "opengraph-description",
-        content: ""
-        },
-        {
-        name: "og:title",
-        hid: "opengraph-title",
-        content: ""
-        },        
-      ]
-    });
-    const authState = reactive(store.getters['auth/getAll'])
-    onBeforeMount(() => {
-      if (!authState.jwt) {
-        const auth = localStorage.getItem('auth');
-        if (auth) store.commit('auth/SET_RESPONSE', { data: JSON.parse(auth) });
-      }
-    })
-    watch(() => [ authState.user, authState.jwt ],
-      () => {
-        console.log('store.state has changed')
-        if(process.browser && authState.jwt){
-          localStorage.setItem('auth', JSON.stringify(authState));
-        }
-    });
-    watch(route, () => {
-      const currentPageObj = store.state.pages.auth[route.value.name]
-      if(currentPageObj){
-      pageinfo.value = {
-        title: currentPageObj.title,
-        meta: [
-        {
-          name:  "description",
+          name: "description",
           hid: "description",
-          content: currentPageObj.description || ''
-        },
-        {
-          name: "og:title",
-          hid: "opengraph-title",
-          content: currentPageObj.title
+          content: ""
         },
         {
           name: "og:description",
           hid: "opengraph-description",
-          content: currentPageObj.description || ''
+          content: ""
         },
-        ]
+        {
+          name: "og:title",
+          hid: "opengraph-title",
+          content: ""
+        }
+      ]
+    });
+    const authState = reactive(store.getters["auth/getAll"]);
+    onBeforeMount(() => {
+      if (!authState.jwt) {
+        const auth = sessionStorage.getItem("auth");
+        if (auth) store.commit("auth/SET_RESPONSE", { data: JSON.parse(auth) });
       }
-    }
-    }, {immediate:true});
-    useMeta(() => ( pageinfo.value ));
-    return { pageinfo };
+    });
+    watch(
+      () => [authState.user, authState.jwt],
+      () => {
+        console.log("store.state has changed");
+        if (process.browser && authState.jwt) {
+          sessionStorage.setItem("auth", JSON.stringify(authState));
+        }
+      }
+    );
+    watch(
+      route,
+      () => {
+        const currentPageObj = store.state.pages.auth[route.value.name];
+        if (currentPageObj) {
+          pageinfo.value = {
+            title: currentPageObj.title,
+            meta: [
+              {
+                name: "description",
+                hid: "description",
+                content: currentPageObj.description || ""
+              },
+              {
+                name: "og:title",
+                hid: "opengraph-title",
+                content: currentPageObj.title
+              },
+              {
+                name: "og:description",
+                hid: "opengraph-description",
+                content: currentPageObj.description || ""
+              }
+            ]
+          };
+        }
+      },
+      { immediate: true }
+    );
+    useMeta(() => pageinfo.value);
+    onMounted(() => {
+      setupReady.value = true;
+    });
+    return { pageinfo, setupReady };
   },
   head: {}
 });
@@ -135,14 +162,3 @@ html {
 }
 </style>
 
-function beforeMount() {
-  throw new Error("Function not implemented.");
-}
-
-function beforeMount() {
-  throw new Error("Function not implemented.");
-}
-
-function beforeMount() {
-  throw new Error("Function not implemented.");
-}

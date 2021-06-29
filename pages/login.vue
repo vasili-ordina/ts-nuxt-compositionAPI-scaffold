@@ -14,12 +14,12 @@
         </template>
         <template v-if="data.authorized">
             <v-card-title>Ingelogd</v-card-title>
-            <v-card-text>U bent ingelogd als: {{data.username}} ({{data.email}})</v-card-text>
+            <v-card-text>U bent ingelogd als: <strong>{{data.username}}</strong> ({{data.email}})</v-card-text>
             <v-card-actions>
                 <v-btn
                     @click="logout()"
                 >
-                Uitloggen
+                Lokaal Afmelden
                 </v-btn>
             </v-card-actions>
         </template>
@@ -30,6 +30,7 @@
                     v-model="data.username"
                     label="Gebruikersnaam"
                     hide-details="auto"
+                    autocomplete="false"
                 ></v-text-field>
                 <v-text-field
                     v-model="data.password"
@@ -60,9 +61,12 @@
 
 </template>
 <script lang="ts">
-import { defineComponent, ref, reactive, useStore } from "@nuxtjs/composition-api"
+import { defineComponent, reactive, useStore } from "@nuxtjs/composition-api"
 export default defineComponent({
-    setup() {
+    props: {
+        // authState: Object
+    },
+    setup(props) {
         const store = useStore()
         const data = reactive({
             authorized: <boolean>store.getters['auth/authenticated'],

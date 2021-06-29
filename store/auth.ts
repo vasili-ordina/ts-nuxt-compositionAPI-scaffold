@@ -40,7 +40,7 @@ export const mutations: MutationTree<RootState> = {
     },
     RESET_STATE: (state) => {
       Object.assign(state, statedefaults)
-      localStorage.clear(); // needs clearing the localStorage
+      sessionStorage.clear();
     }
 }
 export const actions: ActionTree<RootState, RootState> = {
