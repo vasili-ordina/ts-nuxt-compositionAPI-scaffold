@@ -22,6 +22,7 @@ export const state = () => (statedefaults)
 export type RootState = ReturnType<typeof state>
 
 export const getters: GetterTree<RootState, RootState> = {
+  getAll: state => state,
   getJWT: state => state.jwt,
   authenticated: state => state.authenticated,
   getErrorMssg: state => state.errorMssg,
@@ -39,7 +40,7 @@ export const mutations: MutationTree<RootState> = {
     },
     RESET_STATE: (state) => {
       Object.assign(state, statedefaults)
-      // !!! needs clearing the localStorage !!!
+      localStorage.clear(); // needs clearing the localStorage
     }
 }
 export const actions: ActionTree<RootState, RootState> = {

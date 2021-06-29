@@ -60,13 +60,12 @@
 
 </template>
 <script lang="ts">
-import { defineComponent, ref, reactive, useStore, useRouter } from "@nuxtjs/composition-api"
+import { defineComponent, ref, reactive, useStore } from "@nuxtjs/composition-api"
 export default defineComponent({
     setup() {
         const store = useStore()
-        const router = useRouter()
         const data = reactive({
-            authorized: <boolean | undefined>undefined,
+            authorized: <boolean>store.getters['auth/authenticated'],
             loading: false,
             snackbar: <any>{
                 state: false,
@@ -74,11 +73,13 @@ export default defineComponent({
                 timeout: 2000,
                 color: 'dark'
             },
-            username: '',
+            username: <string>store.getters['auth/getUserInfo'].username || '',
             password: '',
-            email: ''
+            email: <string>store.getters['auth/getUserInfo'].email || ''
         })
         const logout = () => {    
+            data.username = '';
+            data.password = '';
             store
             .dispatch('auth/logout')
             .then( () => {
@@ -97,32 +98,27 @@ export default defineComponent({
             .then( () => { 
                 data.loading = false
                 data.authorized = store.getters['auth/authenticated']
+                data.email = store.getters['auth/getUserInfo'].email
                 if (data.authorized) {
-                    data.email = store.getters['auth/getUserInfo'].email
                     data.snackbar = {
                         state: true,
                         color: 'green',
                         txt: 'Succesvol ingelogd!'
                     }
                 } else {
-                    throw 'unknown auth error. system too slow?'
+                    throw 'unknown auth error.'
                 }
             })
-            .catch( () => { 
+            .catch( (e) => { 
                 Object.assign(data,{
                     loading: false,
                     authorized: false,
                     snackbar: {
                         state: true,
                         color: 'red',
-                        txt: store.getters['auth/getErrorMssg']
+                        txt: store.getters['auth/getErrorMssg'] ||  'error: ' + e
                     }
                 })
-                // data.loading = false
-                // data.authorized = false
-                // data.snackbar.state = true
-                // data.snackbar.color = 'red'
-                // data.snackbar.txt = store.getters['auth/getErrorMssg']
             })
         }
         return { 
