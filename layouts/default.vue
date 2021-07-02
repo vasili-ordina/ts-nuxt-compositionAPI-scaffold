@@ -1,9 +1,46 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <h1>{{ pageinfo.title }}</h1>
-      <h2>{{ pageinfo.meta[0].content }}</h2>
-      <nuxt-link to="notes" style="float: right">To notes</nuxt-link>
+      <!-- <h2>{{ pageinfo.meta[0].content }}</h2> -->
+      <!-- <nuxt-link to="notes" style="float: right">To notes</nuxt-link> -->
+      <v-switch
+        v-model="$vuetify.theme.dark"
+        append-icon="mdi-brightness-3"
+        prepend-icon="mdi-brightness-5"
+        persistent-hint
+        hide-details
+      >
+      <!-- :hint="$vuetify.theme.dark ? 'Dark' : 'Light'" -->
+      </v-switch>
+      <v-spacer></v-spacer>
+      <v-toolbar-title>{{ pageinfo.title }}</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn to="/login" class="mr-2" icon>
+        <v-icon :color="authState.authenticated ? 'green' : 'grey lighten-6'">mdi-account</v-icon>
+      </v-btn>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn 
+          v-bind="attrs"
+          v-on="on"
+          icon>
+            <v-icon>
+              mdi-menu
+            </v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <template v-for="(item, index) in allPages">
+            <v-list-item
+              v-if="authState.authenticated === item.restricted || item.restricted === false"
+              :key="index" 
+              :to="item.slug"
+            >
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item>
+         </template>
+        </v-list>
+      </v-menu>
     </v-app-bar>
     <v-main>
       <Nuxt v-if="setupReady" />
@@ -33,7 +70,14 @@ import {
 } from "@nuxtjs/composition-api";
 
 export default defineComponent({
+  name: 'default',
   setup() {
+    interface routeObjI {
+      slug: string,
+      title: string,
+      description?: string,
+      restricted?: boolean 
+    }
     const setupReady = ref(false);
     const store: any = useStore();
     const route: any = useRoute();
@@ -59,6 +103,7 @@ export default defineComponent({
       ]
     });
     const authState = reactive(store.getters["auth/getAll"]);
+    const allPages = reactive(store.state.pages) // <Record<number, routeObjI>>
     onBeforeMount(() => {
       if (!authState.jwt) {
         const auth = sessionStorage.getItem("auth");
@@ -77,7 +122,7 @@ export default defineComponent({
     watch(
       route,
       () => {
-        const currentPageObj = store.state.pages.auth[route.value.name];
+        const currentPageObj = allPages.find( ({ alias }:routeObjI) => alias === <string>route.value.name )
         if (currentPageObj) {
           pageinfo.value = {
             title: currentPageObj.title,
@@ -107,12 +152,13 @@ export default defineComponent({
     onMounted(() => {
       setupReady.value = true;
     });
-    return { pageinfo, setupReady };
+    return { allPages, pageinfo, setupReady, authState };
   },
   head: {}
 });
 </script>
-<style>
+<style lang="scss">
+// @import '~vuetify/src/styles/styles.sass';
 html {
   font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;

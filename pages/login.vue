@@ -7,17 +7,18 @@
     >
         <template slot="progress">
             <v-progress-linear
-                color="deep-purple"
+                color="primary"
                 height="10"
                 indeterminate
             ></v-progress-linear>
         </template>
         <template v-if="data.authorized">
             <v-card-title>Ingelogd</v-card-title>
-            <v-card-text>U bent ingelogd als: <strong>{{data.username}}</strong> ({{data.email}})</v-card-text>
+            <v-card-text>U bent ingelogd als: <strong>{{data.username}}</strong></v-card-text>
             <v-card-actions>
                 <v-btn
                     @click="logout()"
+                    class="primary"
                 >
                 Lokaal Afmelden
                 </v-btn>
@@ -41,7 +42,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-btn
-                    color="deep-purple lighten-2"
+                    color="primary"
                     text
                     @click="login()"
                 >

@@ -1,9 +1,8 @@
 <template>
   <div class="container">
     <div>
-      <Logo />
       <h1 class="title">
-        nuxt-vue3-scaffold
+        static title
       </h1>
       <div>
         <input :value="inpt" />
@@ -16,8 +15,6 @@
 </template>
 
 <script lang="ts">
-// import { NuxtAxiosInstance } from '@nuxtjs/axios'
-// console.dir(NuxtAxiosInstance)
 import { defineComponent, ref, useRoute, useStore, useMeta, useContext } from '@nuxtjs/composition-api'
 export default defineComponent({
   setup() {

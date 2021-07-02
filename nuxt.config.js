@@ -1,3 +1,4 @@
+import colors from 'vuetify/lib/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   router: {
@@ -17,7 +18,34 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
-
+  vuetify: {
+    customVariables: ['~/assets/variables.scss'],
+    treeShake: true,
+    theme: {
+      themes: {
+          light: {
+              primary: colors.indigo,
+          },
+          dark: {
+            
+          }
+      }
+    }
+  },
+    /*
+    themes: {
+      light: {
+        primary: colors.purple,
+        secondary: colors.grey.darken1,
+        accent: colors.shades.black,
+        error: colors.red.accent3,
+        custom-color: green
+      },
+      dark: {
+        primary: colors.blue.lighten3,
+      },
+    }
+    */
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
   ],

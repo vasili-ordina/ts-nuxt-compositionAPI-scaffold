@@ -1,22 +1,47 @@
 import { GetterTree, ActionTree, MutationTree } from "vuex/types/index";
 
-
-interface Stateinterface {
-    auth: Record<string, object>
+interface statedataInterface {
+    slug: string,
+    title: string,
+    description?: string,
+    restricted?: boolean 
 }
-const statedata: Stateinterface = {
-    auth: {
-        'notes': {
-            title: 'Notes!',
-            description: 'some description for notes',
-            restricted: true
-        },
-        'login': {
-            title: 'Log-in',
-            restricted: false
-        }
+const statedata:Record<number, statedataInterface> = [
+    {
+        slug: '/',
+        title: 'Home',
+        restricted: false
+    },
+    {
+        slug: '/overview?type=A',
+        title: 'Overview A',
+        description: 'some description for some overview',
+        restricted: false
+    },
+    {
+        slug: '/overview?type=B',
+        title: 'Overview B (restricted)',
+        description: 'some description for some overview',
+        restricted: true
+    },
+    {
+        slug: '/',
+        title: 'About us',
+        description: 'about us yoo',
+        restricted: false
+    },
+    {
+        slug: '/login',
+        title: 'Account',
+        description: 'change your personal information',
+        restricted: true
+    },   
+    {
+        slug: '/login',
+        title: 'Log-in',
+        restricted: false
     }
-}
+]
 export const state = () => (statedata)
 
 // export const state = () => {

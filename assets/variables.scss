@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;0,800;1,600&display=swap');
+
+// ### VALUES ###
+
+// ## colors ##
+// $colors: ()
+// ## fonts ##
+$body-font-family: 'Open Sans', serif;
+$heading-font-family: '';
+$font-size-root: 12pt;
+$line-height-root: 1.5;
+// here could be "heading-font-sizes"
+$font-weights:(
+    'thin': 100,
+    'light': 300,
+    'regular': 400,
+    'medium': 500,
+    'bold': 700,
+    'black': 900
+);
+
+$blockquote-font-size: 18px;
+$blockquote-font-weight: 300;
+
+// responsive
+$grid-breakpoints: (
+    'xs': 0,
+    'sm': 600px,
+    'md': 960px,
+    'lg': 1280px - 16px,
+    'xl': 1920px - 16px
+ );
+
+// $container-max-widths: (md, lg, xl)
+// $display-breakpoints
+$border-radius-root: 6px;
+
+// ## themes ##
+// $material-light: ()
+// $material-dark: ()
+
+// ### DIRECTIONS ###
+/*
+check nuxt.config.js for theme change / primary, secondary etc..
+*/
+// $material-theme: $material-light;
+$headings: (
+  'h1': (
+    'size': 3.3125rem,
+    'line-height': 1.15em
+  ),
+  'h2': (
+    'size': 2.25rem,
+    'line-height': 1.5em
+  )
+);
+$btn-sizes: (
+  'default': 41,
+  'large': 54
+);
+
+$display-breakpoints: (
+    'print-only': 'only print',
+    'screen-only': 'only screen',
+    'xs-only': 'only screen and (max-width: #{map-get($grid-breakpoints, 'sm') - 1})',
+    'sm-only': 'only screen and (min-width: #{map-get($grid-breakpoints, 'sm')}) and (max-width: #{map-get($grid-breakpoints, 'md') - 1})',
+    'sm-and-down': 'only screen and (max-width: #{map-get($grid-breakpoints, 'md') - 1})',
+    'sm-and-up': 'only screen and (min-width: #{map-get($grid-breakpoints, 'sm')})',
+    'md-only': 'only screen and (min-width: #{map-get($grid-breakpoints, 'md')}) and (max-width: #{map-get($grid-breakpoints, 'lg') - 1})',
+    'md-and-down': 'only screen and (max-width: #{map-get($grid-breakpoints, 'lg') - 1})',
+    'md-and-up': 'only screen and (min-width: #{map-get($grid-breakpoints, 'md')})',
+    'lg-only': 'only screen and (min-width: #{map-get($grid-breakpoints, 'lg')}) and (max-width: #{map-get($grid-breakpoints, 'xl') - 1})',
+    'lg-and-down': 'only screen and (max-width: #{map-get($grid-breakpoints, 'xl') - 1})',
+    'lg-and-up': 'only screen and (min-width: #{map-get($grid-breakpoints, 'lg')})',
+    'xl-only': 'only screen and (min-width: #{map-get($grid-breakpoints, 'xl')})'
+);
