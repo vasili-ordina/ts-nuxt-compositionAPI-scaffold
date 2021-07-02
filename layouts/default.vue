@@ -1,8 +1,6 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <!-- <h2>{{ pageinfo.meta[0].content }}</h2> -->
-      <!-- <nuxt-link to="notes" style="float: right">To notes</nuxt-link> -->
       <v-switch
         v-model="$vuetify.theme.dark"
         append-icon="mdi-brightness-3"
@@ -10,10 +8,9 @@
         persistent-hint
         hide-details
       >
-      <!-- :hint="$vuetify.theme.dark ? 'Dark' : 'Light'" -->
       </v-switch>
       <v-spacer></v-spacer>
-      <v-toolbar-title>{{ pageinfo.title }}</v-toolbar-title>
+      <v-toolbar-title>{{ pageinfo.header }} {{ route.query.type }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn to="/login" class="mr-2" icon>
         <v-icon :color="authState.authenticated ? 'green' : 'grey lighten-6'">mdi-account</v-icon>
@@ -43,7 +40,7 @@
       </v-menu>
     </v-app-bar>
     <v-main>
-      <Nuxt v-if="setupReady" />
+      <Nuxt v-if="setupReady" :pageinfo="pageinfo" />
       <div v-else class="text-center mt-12">
         <v-progress-circular
           indeterminate
@@ -75,33 +72,14 @@ export default defineComponent({
     interface routeObjI {
       slug: string,
       title: string,
+      header: string,
       description?: string,
       restricted?: boolean 
     }
     const setupReady = ref(false);
     const store: any = useStore();
     const route: any = useRoute();
-    const pageinfo = ref({
-      // default values
-      title: "",
-      meta: [
-        {
-          name: "description",
-          hid: "description",
-          content: ""
-        },
-        {
-          name: "og:description",
-          hid: "opengraph-description",
-          content: ""
-        },
-        {
-          name: "og:title",
-          hid: "opengraph-title",
-          content: ""
-        }
-      ]
-    });
+    const pageinfo = ref({});
     const authState = reactive(store.getters["auth/getAll"]);
     const allPages = reactive(store.state.pages) // <Record<number, routeObjI>>
     onBeforeMount(() => {
@@ -113,7 +91,6 @@ export default defineComponent({
     watch(
       () => [authState.user, authState.jwt],
       () => {
-        console.log("store.state has changed");
         if (process.browser && authState.jwt) {
           sessionStorage.setItem("auth", JSON.stringify(authState));
         }
@@ -122,10 +99,11 @@ export default defineComponent({
     watch(
       route,
       () => {
-        const currentPageObj = allPages.find( ({ alias }:routeObjI) => alias === <string>route.value.name )
+        const currentPageObj = allPages.find( (obj) => obj.name === route.value.name )
         if (currentPageObj) {
           pageinfo.value = {
-            title: currentPageObj.title,
+            header: currentPageObj.title, 
+            title: currentPageObj.title + (currentPageObj.description ? ` - ${currentPageObj.description}` : ``),
             meta: [
               {
                 name: "description",
@@ -152,7 +130,7 @@ export default defineComponent({
     onMounted(() => {
       setupReady.value = true;
     });
-    return { allPages, pageinfo, setupReady, authState };
+    return { allPages, pageinfo, setupReady, authState, route };
   },
   head: {}
 });

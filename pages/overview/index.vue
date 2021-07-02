@@ -1,6 +1,6 @@
 <template>
 <v-container>
-    <h1>Notes</h1>
+    <h1>{{props.pageinfo}}</h1>
     <template v-if="authenticated">
     <v-card 
         v-for="note of notesdata"
@@ -26,9 +26,14 @@
 <script lang="ts">
 import { defineComponent, onBeforeMount, ref, useStore } from "@nuxtjs/composition-api"
 export default defineComponent({
-    setup() {
+    props: {
+        pageinfo: { type: Object }
+    },
+    setup(props) {
+        // console.dir(props)
         const store = useStore()
         const authenticated = ref()
+        // const pageinfo = ref(props.pageinfo) || { title: 'something didnt work out' }
         let notesdata = ref()
         onBeforeMount(async () => {
             authenticated.value = store.getters['auth/authenticated']
@@ -39,7 +44,8 @@ export default defineComponent({
         })
         return { 
             notesdata,
-            authenticated
+            authenticated,
+            props
         }
     }
 })
