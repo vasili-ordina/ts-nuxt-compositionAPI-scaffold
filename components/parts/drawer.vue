@@ -3,6 +3,7 @@
     <v-icon @click.stop="settings = !settings">mdi-cog</v-icon>
     <v-navigation-drawer 
       v-model="settings"
+      :right="lefty"
       width="auto"
       app
       absolute 
@@ -18,6 +19,9 @@
 <script>
 import { defineComponent, ref } from '@nuxtjs/composition-api'
 export default defineComponent({
+  props: {
+    lefty: { default: false }
+  },
   setup() {
     let settings = ref(null)
     return { settings }

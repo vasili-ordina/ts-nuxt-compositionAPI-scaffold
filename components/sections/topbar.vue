@@ -1,7 +1,7 @@
 <template>
-  <v-app-bar app>
+  <v-app-bar :class="lefty ? 'lefty' : ''" class="yoo" app>
     <!-- Settings Navigation drawer -->
-    <settingsDrawer>
+    <settingsDrawer :lefty="lefty">
       <v-list-item>
         <v-list-item-title>Licht- / Donkermodus</v-list-item-title>
         <v-list-item-action>
@@ -20,7 +20,9 @@
         <v-list-item-action>
           <v-switch
             class="contrastmode-switch"
-            v-model="leftright"
+            v-model="lefty"
+            :false-value="true" 
+            :true-value="false"
             append-icon="mdi-hand-right"
             prepend-icon="mdi-hand-left"
             persistent-hint
@@ -60,7 +62,7 @@
   </v-app-bar>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from "@nuxtjs/composition-api";
+import { defineComponent, onMounted, ref } from "@nuxtjs/composition-api";
 import Drawer from "@/components/parts/drawer.vue";
 export default defineComponent({
   props: {
@@ -73,13 +75,17 @@ export default defineComponent({
   },
   setup() {
     let settings = ref(null);
-    let leftright = ref(true)
-    return { settings, leftright };
-  },
+    let lefty = ref(false);
+    return { settings, lefty };
+  }
 });
 </script>
 <style scoped>
 .v-list-item__action{
   width: 150px;
+}
+
+.lefty /deep/ .v-toolbar__content {
+  flex-direction: row-reverse !important;
 }
 </style>
