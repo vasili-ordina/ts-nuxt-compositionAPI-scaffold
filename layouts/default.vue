@@ -1,45 +1,12 @@
 <template>
   <v-app>
-    <v-app-bar app>
-      <v-switch
-        v-model="$vuetify.theme.dark"
-        append-icon="mdi-brightness-3"
-        prepend-icon="mdi-brightness-5"
-        persistent-hint
-        hide-details
-      >
-      </v-switch>
-      <v-spacer></v-spacer>
-      <v-toolbar-title>{{ pageinfo.header }} {{ route.query.type }}</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn to="/login" class="mr-2" icon>
-        <v-icon :color="authState.authenticated ? 'green' : 'grey lighten-6'">mdi-account</v-icon>
-      </v-btn>
-      <v-menu offset-y>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn 
-          v-bind="attrs"
-          v-on="on"
-          icon>
-            <v-icon>
-              mdi-menu
-            </v-icon>
-          </v-btn>
-        </template>
-        <v-list>
-          <template v-for="(item, index) in allPages">
-            <v-list-item
-              v-if="authState.authenticated === item.restricted || item.restricted === false"
-              :key="index" 
-              :to="item.slug"
-            >
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item>
-         </template>
-        </v-list>
-      </v-menu>
-    </v-app-bar>
+    <topbar
+      :heading="`${pageinfo.header}  ${route.query.type ? route.query.type : ''}`"
+      :auth="authState.authenticated"  
+      :pages="allPages"
+    />
     <v-main>
+      <!-- Main page / template load -->
       <Nuxt v-if="setupReady" :pageinfo="pageinfo" />
       <div v-else class="text-center mt-12">
         <v-progress-circular
@@ -48,9 +15,8 @@
         ></v-progress-circular>
       </div>
     </v-main>
-    <v-footer>
-      footer..
-    </v-footer>
+    <!-- Footer -->
+    <footerbar />
   </v-app>
 </template>
 <script lang="ts">
@@ -66,8 +32,15 @@ import {
   onMounted
 } from "@nuxtjs/composition-api";
 
+import Topbar from "@/components/sections/topbar.vue"
+import Footer from "@/components/sections/footer.vue"
+
 export default defineComponent({
   name: 'default',
+  components: {
+    'topbar': Topbar,
+    'footerbar': Footer,
+  },
   setup() {
     interface routeObjI {
       slug: string,
@@ -99,7 +72,7 @@ export default defineComponent({
     watch(
       route,
       () => {
-        const currentPageObj = allPages.find( (obj) => obj.name === route.value.name )
+        const currentPageObj = allPages.find( (obj:any) => obj.name === route.value.name);
         if (currentPageObj) {
           pageinfo.value = {
             header: currentPageObj.title, 
@@ -135,54 +108,55 @@ export default defineComponent({
   head: {}
 });
 </script>
-<style lang="scss">
-// @import '~vuetify/src/styles/styles.sass';
-html {
-  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
-}
+<style lang="scss" scoped>
+@import '~vuetify/src/styles/styles.sass';
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-}
+// html {
+//   font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
+//     Roboto, "Helvetica Neue", Arial, sans-serif;
+//   font-size: 16px;
+//   word-spacing: 1px;
+//   -ms-text-size-adjust: 100%;
+//   -webkit-text-size-adjust: 100%;
+//   -moz-osx-font-smoothing: grayscale;
+//   -webkit-font-smoothing: antialiased;
+//   box-sizing: border-box;
+// }
 
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
-}
+// *,
+// *::before,
+// *::after {
+//   box-sizing: border-box;
+//   margin: 0;
+// }
 
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
+// .button--green {
+//   display: inline-block;
+//   border-radius: 4px;
+//   border: 1px solid #3b8070;
+//   color: #3b8070;
+//   text-decoration: none;
+//   padding: 10px 30px;
+// }
 
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
+// .button--green:hover {
+//   color: #fff;
+//   background-color: #3b8070;
+// }
 
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
-}
+// .button--grey {
+//   display: inline-block;
+//   border-radius: 4px;
+//   border: 1px solid #35495e;
+//   color: #35495e;
+//   text-decoration: none;
+//   padding: 10px 30px;
+//   margin-left: 15px;
+// }
+
+// .button--grey:hover {
+//   color: #fff;
+//   background-color: #35495e;
+// }
 </style>
 
