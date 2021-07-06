@@ -1,13 +1,16 @@
 <template>
   <nav>
-    <v-icon @click.stop="settings = !settings">mdi-cog</v-icon>
-    <v-navigation-drawer 
+    <v-icon @click.stop="settings = !settings">
+      mdi-cog
+    </v-icon>
+    <v-navigation-drawer
       v-model="settings"
       :right="lefty"
       width="auto"
       app
-      absolute 
-      temporary>
+      absolute
+      temporary
+    >
       <v-list nav>
         <v-list-item-group active-class="white primary--text">
           <slot />
@@ -20,12 +23,12 @@
 import { defineComponent, ref } from '@nuxtjs/composition-api'
 export default defineComponent({
   props: {
-    lefty: { default: false }
+    lefty: { default: false, type: Boolean }
   },
-  setup() {
-    let settings = ref(null)
+  setup () {
+    const settings = ref(null)
     return { settings }
-  },
+  }
 })
 </script>
 <style scoped>

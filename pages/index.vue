@@ -5,9 +5,13 @@
         static title
       </h1>
       <div>
-        <input :value="inpt" />
-        <button @click="power()">power</button>
-        <button @click="root()">root</button>
+        <input :value="inpt">
+        <button @click="power()">
+          power
+        </button>
+        <button @click="root()">
+          root
+        </button>
         <!-- <h2>{{result}}</h2> -->
       </div>
     </div>
@@ -17,20 +21,20 @@
 <script lang="ts">
 import { defineComponent, ref, useRoute, useStore, useMeta, useContext } from '@nuxtjs/composition-api'
 export default defineComponent({
-  setup() {
+  setup () {
     const store = useStore
-    var inpt = ref<number>(2)
+    const inpt = ref<number>(2)
     const power = function () {
       inpt.value = Math.pow(inpt.value, 2)
     }
     const root = function () {
       inpt.value = Math.pow(inpt.value, 0.5)
     }
-    const { $axios } = useContext();
-    $axios.$get(`https://api.mockaroo.com/api/types?key=02439c80`)
-    .then((r) => {
-      console.log(r)
-    })
+    // const { $axios } = useContext()
+    // $axios.$get('https://api.mockaroo.com/api/types?key=02439c80')
+    //   .then((r) => {
+    //     console.log(r)
+    //   })
     return { inpt, power, root }
   }
 })

@@ -58,11 +58,11 @@
 <script lang="ts">
 import { defineComponent, reactive, useStore } from "@nuxtjs/composition-api";
 export default defineComponent({
-  name: 'loginPanel',
+  name: "loginPanel",
   setup() {
     const store = useStore();
     const data = reactive({
-      authorized: <boolean>store.getters["auth/authenticated"],
+      authorized: <boolean>store.getters['auth/getAuthenticated'],
       loading: false,
       snackbar: <any>{
         state: false,
@@ -83,7 +83,7 @@ export default defineComponent({
           color: "orange",
           txt: "Succesvol uitgelogd"
         };
-        data.authorized = store.getters["auth/authenticated"];
+        data.authorized = store.getters["auth/getAuthenticated"];
       });
     };
     const login = () => {
@@ -95,7 +95,7 @@ export default defineComponent({
         })
         .then(() => {
           data.loading = false;
-          data.authorized = store.getters["auth/authenticated"];
+          data.authorized = store.getters["auth/getAuthenticated"];
           data.email = store.getters["auth/getUserInfo"].email;
           if (data.authorized) {
             data.snackbar = {

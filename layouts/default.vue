@@ -2,7 +2,7 @@
   <v-app>
     <topbar
       :heading="`${pageinfo.header}  ${route.query.type ? route.query.type : ''}`"
-      :auth="authState.authenticated"  
+      :auth="authenticated"
       :pages="allPages"
     />
     <v-main>
@@ -12,7 +12,7 @@
         <v-progress-circular
           indeterminate
           color="primary"
-        ></v-progress-circular>
+        />
       </div>
     </v-main>
     <!-- Footer -->
@@ -30,83 +30,94 @@ import {
   reactive,
   onBeforeMount,
   onMounted
-} from "@nuxtjs/composition-api";
+} from '@nuxtjs/composition-api'
 
-import Topbar from "@/components/sections/topbar.vue"
-import Footer from "@/components/sections/footer.vue"
-
+import Topbar from '@/components/sections/topbar.vue'
+import Footer from '@/components/sections/footer.vue'
 export default defineComponent({
-  name: 'default',
+  name: 'Default',
   components: {
-    'topbar': Topbar,
-    'footerbar': Footer,
+    topbar: Topbar,
+    footerbar: Footer
   },
-  setup() {
+  setup () {
     interface routeObjI {
       name: string,
       title: string,
       header: string,
       description?: string,
-      restricted?: boolean 
+      restricted?: boolean
     }
-    const setupReady = ref(false);
-    const store: any = useStore();
-    const route: any = useRoute();
-    const pageinfo = ref({});
-    const authState = reactive(store.getters["auth/getAll"]);
-    const allPages:routeObjI[] = reactive(store.state.pages) // <Record<number, routeObjI>>
-    onBeforeMount(() => {
-      if (!authState.jwt) {
-        const auth = sessionStorage.getItem("auth");
-        if (auth) store.commit("auth/SET_RESPONSE", { data: JSON.parse(auth) });
-      }
-    });
+    const setupReady = ref(false)
+    const store: any = useStore()
+    const route: any = useRoute()
+    const pageinfo = ref({})
+    // const authState = reactive(store.getters['auth/getAll'])
+    var authenticated = ref(store.getters['auth/getAuthenticated'])
     watch(
+      store.state,
+      () => {
+        authenticated.value = store.getters['auth/getAuthenticated']
+      }
+    )
+
+    const allPages:routeObjI[] = reactive(store.state.pages) // <Record<number, routeObjI>>
+    /* onBeforeMount(() => {
+      // set auth state from sessionStore from browser
+      if (!authState.jwt) {
+        const auth = sessionStorage.getItem('auth')
+        if (auth) { store.commit('auth/SET_RESPONSE', { data: JSON.parse(auth) }) }
+      }
+    }) */
+    /* watch(
+      // if authstate, i.e. bc of login, has changed the auth will be saved in sessionStorage
       () => [authState.user, authState.jwt],
       () => {
         if (process.browser && authState.jwt) {
-          sessionStorage.setItem("auth", JSON.stringify(authState));
+          sessionStorage.setItem('auth', JSON.stringify(authState))
         }
       }
-    );
+    ) */
     watch(
       route,
       () => {
-        const currentPageObj = allPages.find( (obj) => obj.name === route.value.name);
+        console.log('watcher in default.vue; route name: ' + route.value.name)
+        console.dir(allPages)
+        const currentPageObj = allPages.find(obj => obj.name === route.value.name)
         if (currentPageObj) {
           pageinfo.value = {
-            header: currentPageObj.title, 
-            title: currentPageObj.title + (currentPageObj.description ? ` - ${currentPageObj.description}` : ``),
+            header: currentPageObj.title,
+            title: currentPageObj.title + (currentPageObj.description ? ` - ${currentPageObj.description}` : ''),
             meta: [
               {
-                name: "description",
-                hid: "description",
-                content: currentPageObj.description || ""
+                name: 'description',
+                hid: 'description',
+                content: currentPageObj.description || ''
               },
               {
-                name: "og:title",
-                hid: "opengraph-title",
+                name: 'og:title',
+                hid: 'opengraph-title',
                 content: currentPageObj.title
               },
               {
-                name: "og:description",
-                hid: "opengraph-description",
-                content: currentPageObj.description || ""
+                name: 'og:description',
+                hid: 'opengraph-description',
+                content: currentPageObj.description || ''
               }
             ]
-          };
+          }
         }
       },
       { immediate: true }
-    );
-    useMeta(() => pageinfo.value);
+    )
+    useMeta(() => pageinfo.value)
     onMounted(() => {
-      setupReady.value = true;
-    });
-    return { allPages, pageinfo, setupReady, authState, route };
+      setupReady.value = true
+    })
+    return { allPages, pageinfo, setupReady, authenticated, route }
   },
   head: {}
-});
+})
 </script>
 <style lang="scss" scoped>
 @import '~vuetify/src/styles/styles.sass';
@@ -159,4 +170,3 @@ export default defineComponent({
 //   background-color: #35495e;
 // }
 </style>
-

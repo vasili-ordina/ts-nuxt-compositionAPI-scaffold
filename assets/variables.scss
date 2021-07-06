@@ -1,22 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;0,800;1,600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;0,800;1,600&display=swap");
 
 // ### VALUES ###
 
 // ## colors ##
 // $colors: ()
 // ## fonts ##
-$body-font-family: 'Open Sans', serif;
-$heading-font-family: '';
-$font-size-root: 12pt;
+$body-font-family: "Open Sans", serif;
+$heading-font-family: "";
+$font-size-root: 16px;
 $line-height-root: 1.5;
 // here could be "heading-font-sizes"
-$font-weights:(
-    'thin': 100,
-    'light': 300,
-    'regular': 400,
-    'medium': 500,
-    'bold': 700,
-    'black': 900
+$font-weights: (
+  "thin": 100,
+  "light": 300,
+  "regular": 400,
+  "medium": 500,
+  "bold": 700,
+  "black": 900
 );
 
 $blockquote-font-size: 18px;
@@ -24,12 +24,12 @@ $blockquote-font-weight: 300;
 
 // responsive
 $grid-breakpoints: (
-    'xs': 0,
-    'sm': 600px,
-    'md': 960px,
-    'lg': 1280px - 16px,
-    'xl': 1920px - 16px
- );
+  "xs": 0,
+  "sm": 600px,
+  "md": 960px,
+  "lg": 1280px - 16px,
+  "xl": 1920px - 16px
+);
 
 // $container-max-widths: (md, lg, xl)
 // $display-breakpoints
@@ -45,18 +45,18 @@ check nuxt.config.js for theme change / primary, secondary etc..
 */
 // $material-theme: $material-light;
 $headings: (
-  'h1': (
-    'size': 3.3125rem,
-    'line-height': 1.15em
+  "h1": (
+    "size": 3.3125rem,
+    "line-height": 1.15em
   ),
-  'h2': (
-    'size': 2.25rem,
-    'line-height': 1.5em
+  "h2": (
+    "size": 2.25rem,
+    "line-height": 1.5em
   )
 );
 $btn-sizes: (
-  'default': 41,
-  'large': 54
+  "default": 41,
+  "large": 54
 );
 
 $display-breakpoints: (

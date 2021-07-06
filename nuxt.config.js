@@ -1,6 +1,7 @@
 import colors from 'vuetify/lib/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
+  ssr: false, // dont change without consent! then middleware breaks a little: check redirect
   router: {
     middleware: ['pageauth']
   },
@@ -23,16 +24,16 @@ export default {
     treeShake: true,
     theme: {
       themes: {
-          light: {
-              primary: colors.indigo,
-          },
-          dark: {
-            
-          }
+        light: {
+          primary: colors.indigo
+        },
+        dark: {
+
+        }
       }
     }
   },
-    /*
+  /*
     themes: {
       light: {
         primary: colors.purple,
