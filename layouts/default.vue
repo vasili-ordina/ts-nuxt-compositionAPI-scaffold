@@ -43,7 +43,7 @@ export default defineComponent({
   },
   setup() {
     interface routeObjI {
-      slug: string,
+      name: string,
       title: string,
       header: string,
       description?: string,
@@ -54,7 +54,7 @@ export default defineComponent({
     const route: any = useRoute();
     const pageinfo = ref({});
     const authState = reactive(store.getters["auth/getAll"]);
-    const allPages = reactive(store.state.pages) // <Record<number, routeObjI>>
+    const allPages:routeObjI[] = reactive(store.state.pages) // <Record<number, routeObjI>>
     onBeforeMount(() => {
       if (!authState.jwt) {
         const auth = sessionStorage.getItem("auth");
@@ -72,7 +72,7 @@ export default defineComponent({
     watch(
       route,
       () => {
-        const currentPageObj = allPages.find( (obj:any) => obj.name === route.value.name);
+        const currentPageObj = allPages.find( (obj) => obj.name === route.value.name);
         if (currentPageObj) {
           pageinfo.value = {
             header: currentPageObj.title, 
