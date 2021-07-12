@@ -5,7 +5,7 @@
     </v-icon>
     <v-navigation-drawer
       v-model="settings"
-      :right="lefty"
+      :right="rightalign"
       width="auto"
       app
       absolute
@@ -25,9 +25,10 @@ export default defineComponent({
   props: {
     lefty: { default: false, type: Boolean }
   },
-  setup () {
+  setup (props) {
+    let rightalign = ref(props.lefty)
     const settings = ref(null)
-    return { settings }
+    return { settings, rightalign }
   }
 })
 </script>

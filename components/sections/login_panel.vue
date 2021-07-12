@@ -37,6 +37,7 @@
             label="Wachtwoord"
             type="password"
             hide-details="auto"
+            @keyup.enter="login()"
           ></v-text-field>
         </v-card-text>
         <v-card-actions>

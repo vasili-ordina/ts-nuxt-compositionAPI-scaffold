@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <topbar
+      v-if="setupReady"
       :heading="`${pageinfo.header}  ${route.query.type ? route.query.type : ''}`"
       :auth="authenticated"
       :pages="allPages"
@@ -22,9 +23,12 @@
 <script lang="ts">
 import {
   watch,
+  computed,
   defineComponent,
+  useContext,
   useStore,
   useRoute,
+  useRouter,
   useMeta,
   ref,
   reactive,
@@ -41,58 +45,39 @@ export default defineComponent({
     footerbar: Footer
   },
   setup () {
-    interface routeObjI {
-      name: string,
-      title: string,
-      header: string,
-      description?: string,
-      restricted?: boolean
+    interface pagedataInterface {
+      name: string, // the name of the /page/[...] file indentified by Nuxt
+      slug: string, // target address for url's (shouldnt this be the same as name then? no, i.e.: '/' = 'index.vue')
+      title: string, // title that should be shown in <title> and top of the page as <h1>?
+      icon?: string, // icon to show in menu
+      description?: string, // meta description
+      restricted?: boolean // if restricted is true then you need to be logged-in
     }
-    const setupReady = ref(false)
+
+    var setupReady = ref(false)
+    const context: any = useContext()
     const store: any = useStore()
     const route: any = useRoute()
+    const router: any = useRouter()
     const pageinfo = ref({})
-    // const authState = reactive(store.getters['auth/getAll'])
-    var authenticated = ref(store.getters['auth/getAuthenticated'])
-    watch(
-      store.state,
-      () => {
-        authenticated.value = store.getters['auth/getAuthenticated']
-      }
-    )
-
-    const allPages:routeObjI[] = reactive(store.state.pages) // <Record<number, routeObjI>>
-    /* onBeforeMount(() => {
-      // set auth state from sessionStore from browser
-      if (!authState.jwt) {
-        const auth = sessionStorage.getItem('auth')
-        if (auth) { store.commit('auth/SET_RESPONSE', { data: JSON.parse(auth) }) }
-      }
-    }) */
-    /* watch(
-      // if authstate, i.e. bc of login, has changed the auth will be saved in sessionStorage
-      () => [authState.user, authState.jwt],
-      () => {
-        if (process.browser && authState.jwt) {
-          sessionStorage.setItem('auth', JSON.stringify(authState))
-        }
-      }
-    ) */
+    const authenticated = computed(() => store.getters['auth/getAuthenticated'])
+    // const auth = reactive(store.getters['auth/getAll'])
+    const allPages:pagedataInterface[] = reactive(store.getters['pages/getPages']) // <Record<number, routeObjI>>
+    const currentPage:pagedataInterface | undefined = allPages.find(obj => obj.name === route.value.name);
     watch(
       route,
-      () => {
-        console.log('watcher in default.vue; route name: ' + route.value.name)
-        console.dir(allPages)
-        const currentPageObj = allPages.find(obj => obj.name === route.value.name)
-        if (currentPageObj) {
-          pageinfo.value = {
+      async function () {
+        // getting meta data for page keyed by the current routename
+        const currentPageObj = await allPages.find(obj => obj.name === route.value.name)
+        if(currentPageObj) {
+          pageinfo.value={
             header: currentPageObj.title,
-            title: currentPageObj.title + (currentPageObj.description ? ` - ${currentPageObj.description}` : ''),
+            title: currentPageObj.title+(currentPageObj.description? ` - ${currentPageObj.description}`:''),
             meta: [
               {
                 name: 'description',
                 hid: 'description',
-                content: currentPageObj.description || ''
+                content: currentPageObj.description||''
               },
               {
                 name: 'og:title',
@@ -102,71 +87,41 @@ export default defineComponent({
               {
                 name: 'og:description',
                 hid: 'opengraph-description',
-                content: currentPageObj.description || ''
+                content: currentPageObj.description||''
               }
             ]
           }
         }
+
+        // if auth then store it in sessionStorage
+        const authState = await store.getters['auth/getAll']
+        if(!authState.jwt && process.browser) {
+          const auth = await sessionStorage.getItem('auth')
+          if(auth) { store.commit('auth/SET_RESPONSE', { data: JSON.parse(auth) })} 
+        }
+
+        // redirect when is not authenticated
+        if(!authState.authenticated && currentPage?.restricted) {
+          router.push({ name: 'account', params: { anticipated: route.path } })
+        }
+
+        setupReady.value = true
       },
       { immediate: true }
     )
     useMeta(() => pageinfo.value)
-    onMounted(() => {
-      setupReady.value = true
-    })
-    return { allPages, pageinfo, setupReady, authenticated, route }
+    return { allPages, pageinfo, route, authenticated, setupReady }
   },
   head: {}
 })
 </script>
 <style lang="scss" scoped>
 @import '~vuetify/src/styles/styles.sass';
-
-// html {
-//   font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
-//     Roboto, "Helvetica Neue", Arial, sans-serif;
-//   font-size: 16px;
-//   word-spacing: 1px;
-//   -ms-text-size-adjust: 100%;
-//   -webkit-text-size-adjust: 100%;
-//   -moz-osx-font-smoothing: grayscale;
-//   -webkit-font-smoothing: antialiased;
-//   box-sizing: border-box;
-// }
-
-// *,
-// *::before,
-// *::after {
-//   box-sizing: border-box;
-//   margin: 0;
-// }
-
-// .button--green {
-//   display: inline-block;
-//   border-radius: 4px;
-//   border: 1px solid #3b8070;
-//   color: #3b8070;
-//   text-decoration: none;
-//   padding: 10px 30px;
-// }
-
-// .button--green:hover {
-//   color: #fff;
-//   background-color: #3b8070;
-// }
-
-// .button--grey {
-//   display: inline-block;
-//   border-radius: 4px;
-//   border: 1px solid #35495e;
-//   color: #35495e;
-//   text-decoration: none;
-//   padding: 10px 30px;
-//   margin-left: 15px;
-// }
-
-// .button--grey:hover {
-//   color: #fff;
-//   background-color: #35495e;
-// }
+</style>
+<style>
+.boxed{
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 960px;
+}
 </style>

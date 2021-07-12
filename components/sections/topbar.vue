@@ -1,16 +1,18 @@
 <template>
-  <v-app-bar :class="lefty ? 'lefty' : ''" class="yoo" app>
+  <v-app-bar :class="lefty ? 'lefty' : ''" app>
     <!-- Settings Navigation drawer -->
     <settingsDrawer :lefty="lefty">
         <itmSwitch
           label="Licht- / Donkermodus"
           :model="$vuetify.theme.dark"
+          v-on:action="switchDarkLight"
           rightIcon="mdi-brightness-3"
           leftIcon="mdi-brightness-5"
         />
         <itmSwitch 
           label="Links- / Rechtshandig"
           :model="lefty"
+          v-on:action="(e) => { lefty = e }"
           rightIcon="mdi-hand-right"
           leftIcon="mdi-hand-left"
           reverseValues
@@ -50,7 +52,7 @@
   </v-app-bar>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api'
+import { defineComponent, ref, useContext } from '@nuxtjs/composition-api'
 import Drawer from '@/components/parts/drawer.vue'
 import ItmSwitch from '~/components/elements/switch_list-item__twostate--icons.vue'
 export default defineComponent({
@@ -64,9 +66,13 @@ export default defineComponent({
     pages: { type: Array, required: false }
   },
   setup () {
+    let ctx:any = useContext()
+    let switchDarkLight = function (e:boolean){
+      ctx.$vuetify.theme.dark = e
+    }
     const settings = ref(null)
     const lefty = ref(false)
-    return { settings, lefty }
+    return { settings, lefty, switchDarkLight }
   }
 })
 </script>

@@ -37,5 +37,13 @@ export const actions: ActionTree<RootState, RootState> = {
     }
     const respond:APIBrokerCallbackInterface = await api.ask({ endpoint: '/notes' })
     commit(respond.commitkey, respond.payload)
+  },
+  async getItem ({ commit }, { id }) {
+    api.config = {
+      authToken: this.getters['auth/getJWT'],
+      baseURL: this.getters.getAPIBaseURL
+    }
+    const respond = await api.ask({ endpoint: '/notes/'+id})
+    commit(respond.commitkey, respond.payload)
   }
 }

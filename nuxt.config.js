@@ -1,9 +1,9 @@
 import colors from 'vuetify/lib/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
-  ssr: false, // dont change without consent! then middleware breaks a little: check redirect
+  // ssr: true,
   router: {
-    middleware: ['pageauth']
+    // middleware: ['pageauth']
   },
   head: {
     title: 'nuxt-vue3-scaffold',
@@ -69,7 +69,8 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/markdownit'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

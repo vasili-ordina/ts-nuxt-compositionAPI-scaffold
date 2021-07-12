@@ -3,7 +3,7 @@
   <v-list-item-title>{{label}}</v-list-item-title>
   <v-list-item-action>
     <v-switch
-      v-model="model"
+      v-model="switchstate"
       class="contrastmode-switch"
       :append-icon="rightIcon"
       :prepend-icon="leftIcon"
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
- import { defineComponent } from "@nuxtjs/composition-api"
+ import { defineComponent, computed } from "@nuxtjs/composition-api"
  export default defineComponent({
    name: 'switch_list-item__twostate--icons',
    props: {
@@ -27,7 +27,19 @@
      rightIcon: { type: String },
      reverseValues: { type: Boolean, default: false}
    },
-   setup(){
+   setup(props, { emit }){
+
+    const switchstate = computed({
+      get() {
+        return props.model;
+      },
+      set(value:boolean) {
+        console.log('set: ' + value)
+        emit('action', value)
+      }
+    });
+
+     return { switchstate };
    }
  })
 </script>

@@ -4,8 +4,8 @@ interface APIConfigInterface {
     authToken?: string | boolean // eighter bearer token or false (or omitted)
 }
 interface PostObjInterface {
-    endpoint: string,
-    method?: string, // if omitted, get is asumed
+    endpoint: string, // endpoint without base url
+    method?: string, // if omitted, "GET" is asumed
     payload?: object
 }
 export class APIBroker {
