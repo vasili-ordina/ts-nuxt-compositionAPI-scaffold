@@ -4,16 +4,16 @@
   </v-container>
 </template>
 <script lang="ts">
-import { defineComponent } from "@nuxtjs/composition-api";
+import { defineComponent } from '@nuxtjs/composition-api'
 import LoginPanel from '@/components/sections/login_panel.vue'
 export default defineComponent({
   components: {
-    'loginPanel': LoginPanel
+    loginPanel: LoginPanel
   },
-  setup() {
+  setup () {
     return {}
   }
-});
+})
 </script>
 <style lang="scss">
 .loginPanel{
