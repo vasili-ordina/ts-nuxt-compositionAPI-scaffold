@@ -1,4 +1,4 @@
-# nuxt-vue3-scaffold
+# scaffold Nuxt + compositionAPI + TypeScript + Vuetify (+Strapi)
 
 ## Build Setup
 
