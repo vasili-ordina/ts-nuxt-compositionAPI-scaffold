@@ -4,12 +4,13 @@
     <v-card
       v-for="note of notesdata"
       :key="note.id"
-      class="my-6"
+      class="my-6 pa-6"
     >
       <v-card-title>{{ note.titel }}</v-card-title>
       <v-card-text v-html="$md.render(note.note)"></v-card-text>
       <v-card-actions>
-        <nuxt-link :to="'overview/' + note.id">detail</nuxt-link>
+        <!-- <v-btn :to="'overview/' + note.id" flat>lees meer</v-btn> -->
+        <nuxt-link :to="'overview/' + note.id" class="mx-2">Lees meer</nuxt-link>
       </v-card-actions>
     </v-card>
   </v-container>

@@ -1,7 +1,6 @@
 import { GetterTree, ActionTree, MutationTree } from 'vuex'
 import { APIBroker } from '~/helpers/APIbroker'
 const api = new APIBroker({})
-
 interface APIBrokerCallbackInterface {
   commitkey: string,
   payload: any
@@ -29,7 +28,6 @@ export const mutations: MutationTree<RootState> = {
   }
 }
 export const actions: ActionTree<RootState, RootState> = {
-
   async reqNotes ({ commit }) {
     api.config = {
       authToken: this.getters['auth/getJWT'],

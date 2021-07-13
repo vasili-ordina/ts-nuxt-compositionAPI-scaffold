@@ -27,7 +27,7 @@ const statedata:statedataInterface[] = [
   {
     name: 'overview',
     slug: '/overview?type=B',
-    title: 'Overview (restricted)',
+    title: 'Overview (another)',
     description: 'some description for some overview',
     restricted: true
   },

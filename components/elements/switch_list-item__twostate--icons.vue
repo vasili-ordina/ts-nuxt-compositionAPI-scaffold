@@ -34,7 +34,6 @@
         return props.model;
       },
       set(value:boolean) {
-        console.log('set: ' + value)
         emit('action', value)
       }
     });

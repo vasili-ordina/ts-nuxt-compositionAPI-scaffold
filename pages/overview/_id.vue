@@ -1,8 +1,8 @@
 <template>
   <v-container class="boxed">
-    <v-sheet elevation="2" v-if="item" class="px-8 py-6">
+    <v-sheet elevation="2" v-if="item" class="px-10 py-8">
       <h1>{{item.titel}}</h1>
-      <p>{{item.note}}</p>
+      <div v-html="$md.render(item.note)" class="my-8"></div>
     </v-sheet>
   </v-container>
 </template>
@@ -14,10 +14,7 @@ export default defineComponent({
     const $route = useRoute();
     const $store = useStore();
     var item = ref()
-    console.log($route)
     $store.dispatch('content/getItem', { id: $route.value.params.id } ).then(() => {
-      console.log('some id of content:')
-      console.dir($store.getters['content/allNotes'])
       item.value = $store.getters['content/allNotes']
     })
     return { item }
