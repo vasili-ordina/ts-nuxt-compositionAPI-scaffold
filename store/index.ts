@@ -3,8 +3,8 @@ import { GetterTree, ActionTree, MutationTree } from 'vuex'
 interface State {
     APIBaseURL: string
 }
-const stateinterface: State = {
-  APIBaseURL: 'https://nuxt-vue3-scaffold.herokuapp.com'
+const stateinterface:State = {
+  APIBaseURL: process.env.NODE_ENV === 'production' && process.env.API_URL ? process.env.API_URL : 'http://localhost:1337/'
 }
 export const state = () => (stateinterface)
 export type RootState = ReturnType<typeof state>

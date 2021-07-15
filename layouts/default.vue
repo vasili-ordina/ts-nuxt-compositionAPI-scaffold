@@ -7,6 +7,7 @@
       :pages="allPages"
     />
     <v-main>
+      env: {{env}}
       <!-- Main page / template load -->
       <Nuxt v-if="setupReady" :pageinfo="pageinfo" />
       <div v-else class="text-center mt-12">
@@ -59,6 +60,7 @@ export default defineComponent({
     const store: any = useStore()
     const route: any = useRoute()
     const router: any = useRouter()
+    const env:any = process.env.NODE_ENV
     const pageinfo = ref({})
     const authenticated = computed(() => store.getters['auth/getAuthenticated'])
     // const auth = reactive(store.getters['auth/getAll'])
@@ -110,7 +112,7 @@ export default defineComponent({
       { immediate: true }
     )
     useMeta(() => pageinfo.value)
-    return { allPages, pageinfo, route, authenticated, setupReady }
+    return { allPages, pageinfo, route, authenticated, setupReady, env }
   },
   head: {}
 })
