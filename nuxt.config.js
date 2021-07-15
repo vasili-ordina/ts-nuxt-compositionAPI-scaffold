@@ -20,6 +20,7 @@ export default {
     ]
   },
   vuetify: {
+    optionsPath: './vuetify.options.js',
     customVariables: ['~/assets/variables.scss'],
     treeShake: true,
     theme: {
