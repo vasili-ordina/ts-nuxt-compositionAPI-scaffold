@@ -5,6 +5,10 @@ export default {
   router: {
     // middleware: ['pageauth']
   },
+  dir: {
+    // Rename `pages` directory to `templates`
+    pages: 'templates'
+  },
   head: {
     title: 'nuxt-vue3-scaffold',
     htmlAttrs: {

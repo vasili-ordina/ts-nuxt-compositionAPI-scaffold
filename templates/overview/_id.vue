@@ -15,7 +15,7 @@ export default defineComponent({
     const $store = useStore();
     var item = ref()
     $store.dispatch('content/getItem', { id: $route.value.params.id } ).then(() => {
-      item.value = $store.getters['content/allNotes']
+      item.value = $store.getters['content/allBlogs']
     })
     return { item }
   }

@@ -8,7 +8,7 @@
     />
     <v-main>
       <!-- Main page / template load -->
-      <Nuxt v-if="setupReady" :pageinfo="pageinfo" />
+      <Nuxt v-if="setupReady" />
       <div v-else class="text-center mt-12">
         <v-progress-circular
           indeterminate
@@ -44,7 +44,8 @@ export default defineComponent({
     topbar: Topbar,
     footerbar: Footer
   },
-  setup () {
+  head: {},
+   setup () {
     interface pagedataInterface {
       name: string, // the name of the /page/[...] file indentified by Nuxt
       slug: string, // target address for url's (shouldnt this be the same as name then? no, i.e.: '/' = 'index.vue')
@@ -61,37 +62,34 @@ export default defineComponent({
     const router: any = useRouter()
     const pageinfo = ref({})
     const authenticated = computed(() => store.getters['auth/getAuthenticated'])
-    // const auth = reactive(store.getters['auth/getAll'])
-    const allPages:pagedataInterface[] = reactive(store.getters['pages/getPages']) // <Record<number, routeObjI>>
-    const currentPage:pagedataInterface | undefined = allPages.find(obj => obj.name === route.value.name);
+    const allPages:pagedataInterface[] = reactive(store.getters['pages/getPages'])
+
+    // getting meta data for page keyed by the current routename
+    store.dispatch('pages/findCurrentPage', { routeName: route.value.name })
+    const currentPage:pagedataInterface = reactive(store.getters['pages/getCurrentPage'])
+    const { title, meta } = useMeta()
+    title.value = currentPage.title+(currentPage.description? ` - ${currentPage.description}`:'')
+    meta.value = [
+      {
+        name: 'description',
+        hid: 'description',
+        content: currentPage.description||''
+      },
+      {
+        name: 'og:title',
+        hid: 'opengraph-title',
+        content: currentPage.title
+      },
+      {
+        name: 'og:description',
+        hid: 'opengraph-description',
+        content: currentPage.description||''
+      }
+    ]
+
     watch(
       route,
       async function () {
-        // getting meta data for page keyed by the current routename
-        const currentPageObj = await allPages.find(obj => obj.name === route.value.name)
-        if(currentPageObj) {
-          pageinfo.value={
-            header: currentPageObj.title,
-            title: currentPageObj.title+(currentPageObj.description? ` - ${currentPageObj.description}`:''),
-            meta: [
-              {
-                name: 'description',
-                hid: 'description',
-                content: currentPageObj.description||''
-              },
-              {
-                name: 'og:title',
-                hid: 'opengraph-title',
-                content: currentPageObj.title
-              },
-              {
-                name: 'og:description',
-                hid: 'opengraph-description',
-                content: currentPageObj.description||''
-              }
-            ]
-          }
-        }
 
         // if auth then store it in sessionStorage
         const authState = await store.getters['auth/getAll']
@@ -104,15 +102,13 @@ export default defineComponent({
         if(!authState.authenticated && currentPage?.restricted) {
           router.push({ name: 'account', params: { anticipated: route.path } })
         }
-
         setupReady.value = true
       },
       { immediate: true }
     )
-    useMeta(() => pageinfo.value)
+
     return { allPages, pageinfo, route, authenticated, setupReady }
-  },
-  head: {}
+  }
 })
 </script>
 <style lang="scss" scoped>

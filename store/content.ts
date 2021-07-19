@@ -6,34 +6,34 @@ interface APIBrokerCallbackInterface {
   payload: any
 }
 interface State {
-    notes: any,
+    blogs: any,
     errorMssg: any
 }
 const stateinterface: State = {
-  notes: [],
+  blogs: [],
   errorMssg: {}
 }
 export const state = () => (stateinterface)
 export type RootState = ReturnType<typeof state>
 
 export const getters: GetterTree<RootState, RootState> = {
-  allNotes: state => state.notes
+  allBlogs: state => state.blogs
 }
 export const mutations: MutationTree<RootState> = {
   SET_RESPONSE: (state:State, payload:Record<string, string | object>) => {
-    state.notes = payload.data
+    state.blogs = payload.data
   },
   SET_ERROR: (state, payload:any) => {
     state.errorMssg = payload.response
   }
 }
 export const actions: ActionTree<RootState, RootState> = {
-  async reqNotes ({ commit }) {
+  async reqContent ({ commit }, payload) {
     api.config = {
       authToken: this.getters['auth/getJWT'],
       baseURL: this.getters.getAPIBaseURL
     }
-    const respond:APIBrokerCallbackInterface = await api.ask({ endpoint: '/notes' })
+    const respond:APIBrokerCallbackInterface = await api.ask({ endpoint: payload.endpoint })
     commit(respond.commitkey, respond.payload)
   },
   async getItem ({ commit }, { id }) {
@@ -41,7 +41,7 @@ export const actions: ActionTree<RootState, RootState> = {
       authToken: this.getters['auth/getJWT'],
       baseURL: this.getters.getAPIBaseURL
     }
-    const respond = await api.ask({ endpoint: '/notes/'+id})
+    const respond = await api.ask({ endpoint: '/blogs/'+id})
     commit(respond.commitkey, respond.payload)
   }
 }

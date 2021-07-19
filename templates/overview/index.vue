@@ -1,6 +1,7 @@
 <template>
   <v-container class="boxed">
-    <h1>{{ props.pageinfo }}</h1>
+    <h1>yo</h1>
+    <pre>{{pageinfo}}</pre>
     <v-card
       v-for="note of notesdata"
       :key="note.id"
@@ -27,16 +28,18 @@ export default defineComponent({
     const authenticated = ref()
     const notesdata = ref([])
     onBeforeMount(async () => {
-      await store.dispatch('content/reqNotes')
-      notesdata.value = await store.getters['content/allNotes'].map((obj:any) => {
-        let newNote = obj.note.replace('(/uploads', '(https://nuxt-vue3-scaffold.herokuapp.com/uploads');
-        return { ...obj, ...{ note: newNote } }
-      })
+      console.log('page info')
+      console.dir(store.getters['pages/getCurrentPage'])
+      await store.dispatch('content/reqContent', { endpoint: '/blogs' })
+      notesdata.value = await store.getters['content/allBlogs']
+      // notesdata.value = await store.getters['content/allNotes'].map((obj:any) => {
+      //   let newNote = obj.note.replace('(/uploads', '(https://nuxt-vue3-scaffold.herokuapp.com/uploads');
+      //   return { ...obj, ...{ note: newNote } }
+      // })
     })
     return {
       notesdata,
-      authenticated,
-      props
+      authenticated
     }
   }
 })
